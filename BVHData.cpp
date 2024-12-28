@@ -6,7 +6,7 @@ BVHData::BVHData()
 
 // read data from bvh file
 bool BVHData::ReadFileBVH(const char* fileName)
-	{ // ReadFileBVH()
+{ // ReadFileBVH()
 	// open the file & test success
 	this->bvh_path = fileName;
 	std::ifstream inFile(fileName);
@@ -17,32 +17,32 @@ bool BVHData::ReadFileBVH(const char* fileName)
 	std::vector<std::string> tokens;
 	std::string line;
 	while (std::getline(inFile, line))
-		{  // per line
+	{  // per line
 		// not an empty line
-		if (line.size() != 0)
-			{ // non-empty line
+		if (!line.empty())
+		{ // non-empty line
 			StringSplit(line, tokens);
 			if (tokens[0] == "HIERARCHY")
-				{ // HIERARCHY line
+			{ // HIERARCHY line
 				NewLine(inFile, tokens);
 				Joint joint;
 				ReadHierarchy(inFile, tokens, joint, -1);
 				this->root = joint;
-				} // HIERARCHY line
+			} // HIERARCHY line
 			else if (tokens[0] == "MOTION")
-				{ // MOTION line
+			{ // MOTION line
 				ReadMotion(inFile);
 				break;
-				} // MOTION line
-			} // non-empty line
-		} // per line
+			} // MOTION line
+		} // non-empty line
+	} // per line
 		
 	// get all joints in a sequence by searching the tree structure and store it into this class
 	GetAllJoints(this->root, this->all_joints);
 	// load all rotation and translation data into this class
 	loadAllData(this->boneRotations, this->boneTranslations, this->frames);
 	return true;
-	} // ReadFileBVH()
+} // ReadFileBVH()
 
 // move the file stream pointer to next line
 void BVHData::NewLine(std::ifstream& inFile, std::vector<std::string>& tokens)
@@ -201,3 +201,31 @@ void BVHData::loadRotationData(std::vector<Cartesian3>& rotations, std::vector<f
 		j += this->all_joints[j_c]->joint_channel.size();
 		} // per frame
 	} // loadRotationData()
+
+// render the bvh animation
+void BVHData::Render()
+{ // Render()
+	// loop through the joints
+	// render a cylinder from the location of the joint
+	// to the location of the child joint
+
+	glBegin(GL_LINES);
+
+	// get the root joint
+	Joint* root = &this->root;
+	// draw lines from the root joint to its children in red color
+	for (size_t i = 0; i < root->Children.size(); i++)
+	{ // per child
+		glVertex3f(root->joint_offset[0], root->joint_offset[1], root->joint_offset[2]);
+		glVertex3f(root->Children[i].joint_offset[0], root->Children[i].joint_offset[1], root->Children[i].joint_offset[2]);
+		// this draws the lines too big
+	} // per child
+
+
+
+	glEnd();
+
+} // Render()
+
+
+

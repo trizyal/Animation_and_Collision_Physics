@@ -50,6 +50,8 @@ SceneModel::SceneModel()
     stripeLandModel.ReadFileTerrainData(stripeLandModelName, 3);
     rollingLandModel.ReadFileTerrainData(rollingLandModelName, 3);
 
+	standSkeletonModel.ReadFileBVH(motionBvhStand);
+
 	// set the reference for the terrain model to use
     this->activeLandModel = &flatLandModel;
 	
@@ -113,6 +115,11 @@ void SceneModel::Render()
 
 	// render the terrain
     activeLandModel->Render();
+
+	// set a material colour for the character
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, characterColour);
+	// render the character
+	standSkeletonModel.Render();
 
     } // Render()
 

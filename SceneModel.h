@@ -30,6 +30,7 @@
 #include "Terrain.h"
 #include "Matrix4.h"
 #include "Quaternion.h"
+#include "BVHData.h"
 
 class SceneModel										
 	{ // class SceneModel
@@ -38,6 +39,10 @@ class SceneModel
 	Terrain flatLandModel;
 	Terrain stripeLandModel;
 	Terrain rollingLandModel;
+
+	// two character models
+	BVHData standSkeletonModel;
+	BVHData runSkeletonModel;
 
 	// and a pointer to keep track of the active one
 	Terrain *activeLandModel;

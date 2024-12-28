@@ -37,7 +37,7 @@ int main(int argc, char **argv)
         animationWindow.show();
 
         // set QT running
-        return app.exec();
+        return QApplication::exec();
     } // try block
     catch (std::string errorString)
     { // catch block

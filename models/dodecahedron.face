@@ -1,0 +1,62 @@
+#
+# Created for Leeds COMP 5821M Autumn 2019
+#
+#
+# Surface vertices=20 faces=36
+#
+Vertex 0 0.57735 0.57735 0.57735
+Vertex 1 0.35682 0.93417 0
+Vertex 2 -0.35682 0.93417 0
+Vertex 3 -0.57735 0.57735 0.57735
+Vertex 4 0 0.35682 0.93417
+Vertex 5 0.93417 0 0.35682
+Vertex 6 0.93417 0 -0.35682
+Vertex 7 0.57735 0.57735 -0.57735
+Vertex 8 0 -0.35682 0.93417
+Vertex 9 0.57735 -0.57735 0.57735
+Vertex 10 -0.93417 0 0.35682
+Vertex 11 -0.57735 -0.57735 0.57735
+Vertex 12 -0.93417 0 -0.35682
+Vertex 13 -0.57735 0.57735 -0.57735
+Vertex 14 0 0.35682 -0.93417
+Vertex 15 -0.35682 -0.93417 0
+Vertex 16 0.35682 -0.93417 0
+Vertex 17 0.57735 -0.57735 -0.57735
+Vertex 18 0 -0.35682 -0.93417
+Vertex 19 -0.57735 -0.57735 -0.57735
+Face 0  0 1 2
+Face 1  0 2 3
+Face 2  0 3 4
+Face 3  1 0 5
+Face 4  1 5 6
+Face 5  1 6 7
+Face 6  4 8 9
+Face 7  4 9 5
+Face 8  4 5 0
+Face 9  10 11 8
+Face 10  10 8 4
+Face 11  10 4 3
+Face 12  12 10 3
+Face 13  12 3 2
+Face 14  12 2 13
+Face 15  13 2 1
+Face 16  13 1 7
+Face 17  13 7 14
+Face 18  8 11 15
+Face 19  8 15 16
+Face 20  8 16 9
+Face 21  9 16 17
+Face 22  9 17 6
+Face 23  9 6 5
+Face 24  17 18 14
+Face 25  17 14 7
+Face 26  17 7 6
+Face 27  19 14 18
+Face 28  19 13 14
+Face 29  19 12 13
+Face 30  11 10 12
+Face 31  11 12 19
+Face 32  11 19 15
+Face 33  18 17 16
+Face 34  18 16 15
+Face 35  18 15 19

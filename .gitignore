@@ -31,5 +31,8 @@
 *.app
 *.pro
 
+Makefile
 cmake-build-debug/
 .idea/
+.vscode/
+build/

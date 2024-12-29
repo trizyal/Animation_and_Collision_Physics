@@ -27,6 +27,10 @@ Cartesian3::Cartesian3(float X, float Y, float Z)
     : x(X), y(Y), z(Z) 
     {}
 
+Cartesian3::Cartesian3(float xyz[3])
+    : x(xyz[0]), y(xyz[1]), z(xyz[2])
+    {}
+
 // equality operator
 bool Cartesian3::operator ==(const Cartesian3 &other) const
     { // Cartesian3::operator ==()

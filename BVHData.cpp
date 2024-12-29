@@ -205,27 +205,54 @@ void BVHData::loadRotationData(std::vector<Cartesian3>& rotations, std::vector<f
 // render the bvh animation
 void BVHData::Render()
 { // Render()
-	// loop through the joints
-	// render a cylinder from the location of the joint
-	// to the location of the child joint
+	// global root position = root offset = (0, 0, 0)
+	// global child position = parent position + child offset
 
+
+	auto root = this->root;
+
+	loopRoot2Children(root, Cartesian3(root.joint_offset));
+
+
+
+
+} // Render()
+
+
+void BVHData::loopRoot2Children(Joint joint, Cartesian3 parent_offset)
+{
+	auto joint_offset = Cartesian3(joint.joint_offset) + parent_offset;
+	for (auto child : joint.Children)
+    {
+		std::cout<<child.joint_name<<std::endl;
+        auto child_offset = Cartesian3(child.joint_offset) + joint_offset;
+	    auto childPos = child_offset + joint_offset;
+
+		// make sure the rotation of the joint is correct
+
+
+		renderCylinder(joint_offset, childPos);
+		loopRoot2Children(child, childPos);
+    }
+}
+
+
+
+
+
+// render a cylinder between two points
+void BVHData::renderCylinder(const Cartesian3 start, const Cartesian3 end)
+{ // RenderCylinder()
+	// this->count_calls++;
+    // draw line for now
 	glBegin(GL_LINES);
 
-	// get the root joint
-	Joint* root = &this->root;
-	// draw lines from the root joint to its children in red color
-	for (size_t i = 0; i < root->Children.size(); i++)
-	{ // per child
-		glVertex3f(root->joint_offset[0], root->joint_offset[1], root->joint_offset[2]);
-		glVertex3f(root->Children[i].joint_offset[0], root->Children[i].joint_offset[1], root->Children[i].joint_offset[2]);
-		// this draws the lines too big
-	} // per child
-
-
+	glVertex3f(start.x, start.y, start.z);
+	glVertex3f(end.x, end.y, end.z);
 
 	glEnd();
 
-} // Render()
+} // RenderCylinder()
 
 
 

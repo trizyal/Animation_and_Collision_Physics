@@ -121,10 +121,11 @@ class BVHData
 		// render the bvh animation
 		void Render();
 
-		// recursive function to loop through all children
-		void loopRoot2Children(Joint , Cartesian3 parent_offset);
+		void drawCylinder(Cartesian3, Cartesian3);
 
-		void renderCylinder(Cartesian3, Cartesian3);
+		void drawLine(Cartesian3, Cartesian3);
+
+		void printJoints();
 
 };
 

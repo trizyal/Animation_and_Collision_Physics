@@ -118,7 +118,7 @@ class BVHData
 		// check whether the given string is a number
 		bool isNumeric(const std::string&);
 
-		// render the bvh animation
+		// render the bvh heirarchy
 		void Render();
 
 		void drawCylinder(Cartesian3, Cartesian3);
@@ -126,6 +126,8 @@ class BVHData
 		void drawLine(Cartesian3, Cartesian3);
 
 		void printJoints();
+
+		void printFrames();
 
 };
 

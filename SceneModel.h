@@ -40,12 +40,15 @@ class SceneModel
 	Terrain stripeLandModel;
 	Terrain rollingLandModel;
 
+	// and a pointer to keep track of the active one
+	Terrain *activeLandModel;
+
 	// two character models
 	BVHData standSkeletonModel;
 	BVHData runSkeletonModel;
 
 	// and a pointer to keep track of the active one
-	Terrain *activeLandModel;
+	BVHData *activeSkeletonModel;
 
 	// the view matrix - updated by the interface code
 	Matrix4 viewMatrix;

@@ -202,10 +202,30 @@ void BVHData::loadRotationData(std::vector<Cartesian3>& rotations, std::vector<f
 		} // per frame
 	} // loadRotationData()
 
+
+
 // render the bvh animation
 void BVHData::Render()
 { // Render()
 
+	// printFrames();
+	int frame = 0;
+
+	glPushMatrix();
+	glRotatef(90.0, 1.0, 0.0, 0.0);
+	glTranslatef(0.0, 10.0, -10.0);
+	glScalef(0.15f, 0.15f, 0.15f);
+
+	for (auto joint : this->all_joints)
+	{
+		for (auto child : joint->Children)
+		{
+			// drawLine(joint->joint_offset, child.joint_offset);
+
+			drawCylinder(joint->joint_offset, child.joint_offset);
+		}
+	}
+	glPopMatrix();
 } // Render()
 
 
@@ -213,94 +233,32 @@ void BVHData::Render()
 void BVHData::drawCylinder(const Cartesian3 start, const Cartesian3 end)
 { // DrawCylinder()
 
-	// first we need to get the vector between the two points
+	float radius = 0.4;
+	int segments = 10;
+
 	Cartesian3 v = end - start;
 	float height = v.length();
-	// float radius = height*0.02f;
-	float radius = 0.5f;
-	auto axis = v.unit();
-
-	int segments = 16;
-
+	GLUquadric *quadric = gluNewQuadric();
 	glPushMatrix();
-	glScalef(0.1f, 0.1f, 0.1f);
-	glRotatef(90.0, 1.0, 0.0, 0.0);
 	glTranslatef(start.x, start.y, start.z);
-
-
-	float angle = acos(axis.y) * 180 / 3.1415926;
-	if (angle > 0.0001)
-	{
-		glRotatef(angle, -axis.z, 0.0f, axis.x);
-	}
-	else
-	{
-		glRotatef(-90, 0.0f, 0.0f, 1.0f);
-	}
-
-	glBegin(GL_TRIANGLE_STRIP);
-	for (int i = 0; i <= segments; i++)
-	{
-		float theta = 2.0f * 3.1415926f * float(i) / float(segments);
-		float cos_theta = cos(theta);
-		float sin_theta = sin(theta);
-
-		float x = radius * cos_theta;
-		float y = radius * sin_theta;
-
-		glNormal3f(cos_theta, sin_theta, 0.0f);
-		glVertex3f(x, y, 0.0f);
-		glVertex3f(x, y, height);
-	}
-	glEnd();
-
-	glBegin(GL_TRIANGLE_FAN);
-	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	for (int i = 0; i <= segments; i++)
-	{
-		float theta = 2.0f * 3.1415926f * float(i) / float(segments);
-		float cos_theta = cos(theta);
-		float sin_theta = sin(theta);
-
-		float x = radius * cos_theta;
-		float y = radius * sin_theta;
-
-		glVertex3f(x, y, 0.0f);
-	}
-	glEnd();
-
-	glBegin(GL_TRIANGLE_FAN);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, height);
-	for (int i = 0; i <= segments; i++)
-	{
-		float theta = 2.0f * 3.1415926f * float(i) / float(segments);
-		float cos_theta = cos(theta);
-		float sin_theta = sin(theta);
-
-		float x = radius * cos_theta;
-		float y = radius * sin_theta;
-
-		glVertex3f(x, y, height);
-	}
-	glEnd();
-
+	glRotatef(acos(v.z / height) * 180.0 / 3.1415926, -v.y, v.x, 0.0);
+	gluCylinder(quadric, radius, radius, height, segments, segments);
+	gluQuadricDrawStyle(quadric, GLU_FILL);
 	glPopMatrix();
+	gluDeleteQuadric(quadric);
 
 } // DrawCylinder()
 
 
+
 void BVHData::drawLine(Cartesian3 start, Cartesian3 end)
 {
-	glPushMatrix();
 
 	glBegin(GL_LINES);
 	glVertex3f(start.x, start.y, start.z);
 	glVertex3f(end.x, end.y, end.z);
 	glEnd();
 
-	glPopMatrix();
 }
 
 
@@ -315,6 +273,24 @@ void BVHData::printJoints()
 		std::cout << "Children Size: " << joint->Children.size() << std::endl;
 		std::cout << "Parent: " << this->parentBones[joint->id] << std::endl << std::endl;
 	}
+	exit(0);
+}
+
+
+
+void BVHData::printFrames()
+{
+	for (auto frame : this->frames)
+	{
+		for (auto f : frame)
+		{
+			std::cout << f << std::endl;
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << this->frames.size() << std::endl;
+
 	exit(0);
 }
 

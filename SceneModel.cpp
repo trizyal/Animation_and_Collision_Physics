@@ -41,6 +41,10 @@ const GLfloat sunAmbient[4] = {0.1, 0.1, 0.1, 1.0 };
 const GLfloat sunDiffuse[4] = {0.7, 0.7, 0.7, 1.0 };
 const GLfloat blackColour[4] = {0.0, 0.0, 0.0, 1.0};
 
+const GLfloat redColor[4] = {1.0, 0.0, 0.0, 1.0};
+const GLfloat yellowColor[4] = {1.0, 1.0, 0.0, 1.0};
+const GLfloat blueColor[4] = {0.0, 0.0, 1.0, 1.0};
+
 // constructor
 SceneModel::SceneModel()
     { // constructor
@@ -51,13 +55,14 @@ SceneModel::SceneModel()
     rollingLandModel.ReadFileTerrainData(rollingLandModelName, 3);
 
 	standSkeletonModel.ReadFileBVH(motionBvhStand);
+	runSkeletonModel.ReadFileBVH(motionBvhRun);
 
 	// set the reference for the terrain model to use
     this->activeLandModel = &flatLandModel;
 	
 	// set the initial view matrix
 	viewMatrix = Matrix4::Translate(Cartesian3(0.0, 15.0, -10.0));
-	
+
 	// and set the frame number to 0
 	frameNumber = 0;
 		
@@ -94,7 +99,8 @@ void SceneModel::Render()
 
 	// set the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
-	
+	// glMatrixMode(GL_PROJECTION);
+
 	// start with the identity
 	glLoadIdentity();
 
@@ -114,12 +120,40 @@ void SceneModel::Render()
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
 
 	// render the terrain
-    activeLandModel->Render();
+	activeLandModel->Render();
 
 	// set a material colour for the character
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, characterColour);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
+	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
 	// render the character
 	standSkeletonModel.Render();
+	// runSkeletonModel.Render();
+
+
+	glRotatef(90, 1.0, 0.0, 0.0);
+
+	glBegin(GL_LINES);
+	// x-axis
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, redColor);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
+	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
+	glVertex3f(-100.0, 0.0, 1.0);
+	glVertex3f(100.0, 0.0, 1.0);
+	// y-axis
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, yellowColor);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
+	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
+	glVertex3f(0.0, -100.0, 1.0);
+	glVertex3f(0.0, 100.0, 1.0);
+	// z-axis
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blueColor);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
+	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
+	glVertex3f(0.0, 0.0, -100.0);
+	glVertex3f(0.0, 0.0, 100.0);
+
+	glEnd();
 
     } // Render()
 
@@ -160,7 +194,7 @@ void SceneModel::SwitchLand()
 	
 // routine to switch between sphere and dodecahedron
 void SceneModel::SwitchModel()
-	{ // SwitchModel()
+{ // SwitchModel()
 	// and reset the physics
 	ResetPhysics();
-	} // SwitchModel()
+} // SwitchModel()

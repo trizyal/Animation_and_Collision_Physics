@@ -73,8 +73,12 @@ SceneModel::SceneModel()
 // routine that updates the scene for the next frame
 void SceneModel::Update()
 	{ // Update()
+		// increment the frame number
+		frameNumber++;
 
-	} // Update()
+		if (frameNumber > 23)
+			frameNumber = 0;
+	} // Update()`
 
 // routine to tell the scene to render itself
 void SceneModel::Render()
@@ -127,8 +131,8 @@ void SceneModel::Render()
 	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
 	// render the character
-	standSkeletonModel.Render(0);
-	// runSkeletonModel.Render();
+	// standSkeletonModel.Render(0);
+	runSkeletonModel.Render(frameNumber);
 
 
 	// glRotatef(90, 1.0, 0.0, 0.0);

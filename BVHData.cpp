@@ -205,24 +205,22 @@ void BVHData::loadRotationData(std::vector<Cartesian3>& rotations, std::vector<f
 
 
 // render the bvh animation
-void BVHData::Render()
+void BVHData::Render(int frame)
 { // Render()
-
-	// printFrames();
-	int frame = 0;
 
 	glPushMatrix();
 	glRotatef(90.0, 1.0, 0.0, 0.0);
+	// glRotatef(90.0, 0.0, 1.0, 0.0);
 	glTranslatef(0.0, 10.0, -10.0);
 	glScalef(0.15f, 0.15f, 0.15f);
 
-	for (auto joint : this->all_joints)
+	for (auto* joint : this->all_joints)
 	{
 		for (auto child : joint->Children)
 		{
 			// drawLine(joint->joint_offset, child.joint_offset);
 
-			drawCylinder(joint->joint_offset, child.joint_offset);
+			drawCylinder(*joint, child, frame);
 		}
 	}
 	glPopMatrix();
@@ -230,8 +228,13 @@ void BVHData::Render()
 
 
 // draw a cylinder between two points
-void BVHData::drawCylinder(const Cartesian3 start, const Cartesian3 end)
+void BVHData::drawCylinder(Joint start_joint, Joint end_joint, int frame)
 { // DrawCylinder()
+
+	Cartesian3 start = Cartesian3(start_joint.joint_offset);
+	Cartesian3 end = Cartesian3(end_joint.joint_offset);
+
+	auto rotation = this->boneRotations[frame][start_joint.id];
 
 	float radius = 0.4;
 	int segments = 10;
@@ -241,6 +244,14 @@ void BVHData::drawCylinder(const Cartesian3 start, const Cartesian3 end)
 	GLUquadric *quadric = gluNewQuadric();
 	glPushMatrix();
 	glTranslatef(start.x, start.y, start.z);
+	glRotatef(rotation.x, 1.0, 0.0, 0.0);
+	glRotatef(rotation.y, 0.0, 1.0, 0.0);
+	glRotatef(rotation.z, 0.0, 0.0, 1.0);
+
+	// glRotatef(rotation.z, 0.0, 0.0, 1.0);
+	// glRotatef(rotation.y, 0.0, 1.0, 0.0);
+	// glRotatef(rotation.x, 1.0, 0.0, 0.0);
+
 	glRotatef(acos(v.z / height) * 180.0 / 3.1415926, -v.y, v.x, 0.0);
 	gluCylinder(quadric, radius, radius, height, segments, segments);
 	gluQuadricDrawStyle(quadric, GLU_FILL);

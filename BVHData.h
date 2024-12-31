@@ -119,9 +119,9 @@ class BVHData
 		bool isNumeric(const std::string&);
 
 		// render the bvh heirarchy
-		void Render();
+		void Render(int);
 
-		void drawCylinder(Cartesian3, Cartesian3);
+		void drawCylinder(Joint, Joint, int);
 
 		void drawLine(Cartesian3, Cartesian3);
 

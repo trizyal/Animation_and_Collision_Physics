@@ -127,33 +127,33 @@ void SceneModel::Render()
 	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
 	// render the character
-	standSkeletonModel.Render();
+	standSkeletonModel.Render(0);
 	// runSkeletonModel.Render();
 
 
-	glRotatef(90, 1.0, 0.0, 0.0);
-
-	glBegin(GL_LINES);
-	// x-axis
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, redColor);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
-	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
-	glVertex3f(-100.0, 0.0, 1.0);
-	glVertex3f(100.0, 0.0, 1.0);
-	// y-axis
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, yellowColor);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
-	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
-	glVertex3f(0.0, -100.0, 1.0);
-	glVertex3f(0.0, 100.0, 1.0);
-	// z-axis
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blueColor);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
-	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
-	glVertex3f(0.0, 0.0, -100.0);
-	glVertex3f(0.0, 0.0, 100.0);
-
-	glEnd();
+	// glRotatef(90, 1.0, 0.0, 0.0);
+	//
+	// glBegin(GL_LINES);
+	// // x-axis
+	// glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, redColor);
+	// glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
+	// glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
+	// glVertex3f(-100.0, 0.0, 1.0);
+	// glVertex3f(100.0, 0.0, 1.0);
+	// // y-axis
+	// glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, yellowColor);
+	// glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
+	// glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
+	// glVertex3f(0.0, -100.0, 1.0);
+	// glVertex3f(0.0, 100.0, 1.0);
+	// // z-axis
+	// glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blueColor);
+	// glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
+	// glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
+	// glVertex3f(0.0, 0.0, -100.0);
+	// glVertex3f(0.0, 0.0, 100.0);
+	//
+	// glEnd();
 
     } // Render()
 

@@ -207,30 +207,173 @@ void BVHData::loadRotationData(std::vector<Cartesian3>& rotations, std::vector<f
 // render the bvh animation per frame
 void BVHData::Render(int frame)
 { // Render()
+	auto rotation = this->boneRotations[frame];
 
-	// auto frames = this->boneRotations.size();
-	// std::cout << "Frames: " << frames << std::endl;
-	// exit(0);
-
-	int debug_frame = frame > 16 ? frame-16 : frame;
-
-
+	auto root = this->root;
 	glPushMatrix();
-	glRotatef(90.0, 1.0, 0.0, 0.0);
-	glTranslatef(0.0, 10.0, -10.0);
-	glScalef(0.15f, 0.15f, 0.15f);
+	glTranslatef(root.joint_offset[0], root.joint_offset[1], root.joint_offset[2]);
 
-	for (auto* joint : this->all_joints)
-	{
-		for (auto child : joint->Children)
-		{
-			// drawLine(joint->joint_offset, child.joint_offset);
-
-			drawCylinder(*joint, child, debug_frame);
-		}
-	}
+	RenderJoints(root, rotation);
 	glPopMatrix();
 } // Render()
+
+
+
+void BVHData::RenderJoints(Joint joint, std::vector<Cartesian3> rotation)
+{
+	for (auto child : joint.Children)
+	{
+		glPushMatrix();
+
+		glRotatef(rotation[joint.id].x, 1.0, 0.0, 0.0);
+		glRotatef(rotation[joint.id].y, 0.0, 1.0, 0.0);
+		glRotatef(rotation[joint.id].z, 0.0, 0.0, 1.0);
+
+		// drawLine(Cartesian3(0, 0, 0), child.joint_offset);
+		RenderBone(Cartesian3(0, 0, 0), Cartesian3(child.joint_offset));
+
+		glTranslatef(child.joint_offset[0], child.joint_offset[1], child.joint_offset[2]);
+		RenderJoints(child, rotation);
+
+		glPopMatrix();
+	}
+}
+
+
+void BVHData::RenderBone(Cartesian3 start, Cartesian3 end)
+{
+	float radius = 0.7;
+	int segments = 10;
+
+	// Cartesian3 v = end - start;
+	float height = end.length();
+	GLUquadric *quadric = gluNewQuadric();
+
+	glPushMatrix();
+
+	glRotatef(acos(end.z / height) * 180.0 / 3.1415926, -end.y, end.x, 0.0);
+	gluCylinder(quadric, radius, radius, height, segments, segments);
+	gluQuadricDrawStyle(quadric, GLU_FILL);
+
+	glPopMatrix();
+	gluDeleteQuadric(quadric);
+}
+
+
+void BVHData::TestRenderJoints()
+{
+	auto root = this->all_joints[0];
+	glTranslatef(root->joint_offset[0], root->joint_offset[1], root->joint_offset[2]);
+	Cartesian3 root_offset = Cartesian3(0, 0, 0);
+
+	drawSphere(root_offset);
+
+	const GLfloat yellowColor[4] = {1.0, 1.0, 0.0, 1.0};
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, yellowColor);
+
+	for (auto child : root->Children)
+	{
+		drawLine(root_offset, child.joint_offset);
+		glPushMatrix();
+		glTranslatef(child.joint_offset[0], child.joint_offset[1], child.joint_offset[2]);
+
+		drawSphere(root_offset);
+
+		for (auto grandchild : child.Children)
+		{
+			drawLine(root_offset, grandchild.joint_offset);
+			glPushMatrix();
+			glTranslatef(grandchild.joint_offset[0], grandchild.joint_offset[1], grandchild.joint_offset[2]);
+
+			drawSphere(root_offset);
+
+			for (auto greatgrandchild : grandchild.Children)
+			{
+				drawLine(root_offset, greatgrandchild.joint_offset);
+				glPushMatrix();
+				glTranslatef(greatgrandchild.joint_offset[0], greatgrandchild.joint_offset[1], greatgrandchild.joint_offset[2]);
+
+				drawSphere(root_offset);
+
+				for (auto greatgreatgrandchild : greatgrandchild.Children)
+				{
+					drawLine(root_offset, greatgreatgrandchild.joint_offset);
+					glPushMatrix();
+					glTranslatef(greatgreatgrandchild.joint_offset[0], greatgreatgrandchild.joint_offset[1], greatgreatgrandchild.joint_offset[2]);
+
+					drawSphere(root_offset);
+
+					for (auto ggggrandchild : greatgreatgrandchild.Children)
+					{
+						drawLine(root_offset, ggggrandchild.joint_offset);
+						glPushMatrix();
+						glTranslatef(ggggrandchild.joint_offset[0], ggggrandchild.joint_offset[1], ggggrandchild.joint_offset[2]);
+
+						drawSphere(root_offset);
+
+						for (auto gggggrandchild : ggggrandchild.Children)
+						{
+							drawLine(root_offset, gggggrandchild.joint_offset);
+							glPushMatrix();
+							glTranslatef(gggggrandchild.joint_offset[0], gggggrandchild.joint_offset[1], gggggrandchild.joint_offset[2]);
+
+							drawSphere(root_offset);
+
+							for (auto ggggggrandchild : gggggrandchild.Children)
+							{
+								drawLine(root_offset, ggggggrandchild.joint_offset);
+								glPushMatrix();
+								glTranslatef(ggggggrandchild.joint_offset[0], ggggggrandchild.joint_offset[1], ggggggrandchild.joint_offset[2]);
+
+								drawSphere(root_offset);
+
+								for (auto gggggggrandchild : ggggggrandchild.Children)
+								{
+									drawLine(root_offset, gggggggrandchild.joint_offset);
+									glPushMatrix();
+									glTranslatef(gggggggrandchild.joint_offset[0], gggggggrandchild.joint_offset[1], gggggggrandchild.joint_offset[2]);
+
+									drawSphere(root_offset);
+
+									for (auto ggggggggrandchild : gggggggrandchild.Children)
+									{
+										drawLine(root_offset, ggggggggrandchild.joint_offset);
+										glPushMatrix();
+										glTranslatef(ggggggggrandchild.joint_offset[0], ggggggggrandchild.joint_offset[1], ggggggggrandchild.joint_offset[2]);
+
+										drawSphere(root_offset);
+
+										glPopMatrix();
+									}
+									glPopMatrix();
+								}
+								glPopMatrix();
+							}
+							glPopMatrix();
+						}
+						glPopMatrix();
+					}
+					glPopMatrix();
+				}
+				glPopMatrix();
+			}
+			glPopMatrix();
+		}
+		glPopMatrix();
+	}
+}
+
+
+
+void BVHData::drawSphere(const Cartesian3 point)
+{
+	GLUquadric *quadric = gluNewQuadric();
+	glPushMatrix();
+	glTranslatef(point.x, point.y, point.z);
+	gluSphere(quadric, 0.7, 10, 10);
+	glPopMatrix();
+	gluDeleteQuadric(quadric);
+}
 
 
 // draw a cylinder between two points
@@ -254,9 +397,9 @@ void BVHData::drawCylinder(Joint start_joint, Joint end_joint, int frame)
 	// glRotatef(rotation.y, 0.0, 1.0, 0.0);
 	// glRotatef(rotation.z, 0.0, 0.0, 1.0);
 
-	glRotatef(rotation.z, 0.0, 0.0, 1.0);
-	glRotatef(rotation.y, 0.0, 1.0, 0.0);
-	glRotatef(rotation.x, 1.0, 0.0, 0.0);
+	// glRotatef(rotation.z, 0.0, 0.0, 1.0);
+	// glRotatef(rotation.y, 0.0, 1.0, 0.0);
+	// glRotatef(rotation.x, 1.0, 0.0, 0.0);
 
 	glRotatef(acos(v.z / height) * 180.0 / 3.1415926, -v.y, v.x, 0.0);
 	gluCylinder(quadric, radius, radius, height, segments, segments);

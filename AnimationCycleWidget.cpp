@@ -44,8 +44,11 @@ AnimationCycleWidget::AnimationCycleWidget(QWidget *parent, SceneModel *TheScene
 	// connect it to the desired slot
 	connect(animationTimer, SIGNAL(timeout()), this, SLOT(nextFrame()));
 	// set the timer to fire 60 times a second
-	animationTimer->start((double)16.6667);
-	} // constructor
+	// animationTimer->start((double)16.6667);
+
+	// set the timer to fire 24 times a second
+	animationTimer->start((double)1000/24);
+    } // constructor
 
 // destructor
 AnimationCycleWidget::~AnimationCycleWidget()

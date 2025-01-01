@@ -13,6 +13,8 @@
 ///////////////////////////////////////////////////
 
 #include "SceneModel.h"
+
+#include <chrono>
 #include <math.h>
 #include "Quaternion.h"
 
@@ -31,7 +33,7 @@ const char* motionBvhRun			= "./models/fast_run.bvh";
 const float cameraSpeed = 5.0;
 
 // this is 60 fps nominal speed
-const float frameTime = 0.0166667;	
+const float frameTime = 0.0166667;
 
 const Homogeneous4 sunDirection(0.5, -0.5, 0.3, 0.0);
 const GLfloat groundColour[4] = { 0.2, 0.5, 0.2, 1.0 };
@@ -76,8 +78,14 @@ void SceneModel::Update()
 		// increment the frame number
 		frameNumber++;
 
-		if (frameNumber > 23)
+		if (frameNumber > 15)
+		{
 			frameNumber = 0;
+			// auto time = std::chrono::system_clock::now();
+			// print time in milliseconds
+			// std::cout << "Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()).count() << std::endl;
+		}
+		// std::cout << "Frame: " << frameNumber << std::endl;
 	} // Update()`
 
 // routine to tell the scene to render itself
@@ -132,7 +140,26 @@ void SceneModel::Render()
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
 	// render the character
 	// standSkeletonModel.Render(0);
+
+	glPushMatrix();
+
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, characterColour);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
+	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
+
+	// glTranslatef(0.0, -100.0, 0.0);
+	glRotatef(90.0, 1.0, 0.0, 0.0);
+	// glRotatef(90, 0.0, 1.0, 0.0);
+	glTranslatef(0.0, 10.0, 0.0);
+	glScalef(0.05f, 0.05f, 0.05f);
+
+	// standSkeletonModel.TestRenderJoints();
+	// standSkeletonModel.Render(0);
 	runSkeletonModel.Render(frameNumber);
+
+	glPopMatrix();
+
+
 
 
 	// glRotatef(90, 1.0, 0.0, 0.0);

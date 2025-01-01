@@ -1,0 +1,389 @@
+mixamorig1:Hips
+0
+-2.3e-05 99.7544 3.00785
+Children Size: 3
+Parent: -1
+
+mixamorig1:Spine
+1
+0 9.71722 -1.18021
+Children Size: 1
+Parent: 0
+
+mixamorig1:Spine1
+2
+0 11.3368 -1.37694
+Children Size: 1
+Parent: 1
+
+mixamorig1:Spine2
+3
+0 12.9563 -1.57366
+Children Size: 3
+Parent: 2
+
+mixamorig1:Neck
+4
+0 14.576 -1.77044
+Children Size: 1
+Parent: 3
+
+mixamorig1:Head
+5
+0 6.7202 1.97216
+Children Size: 1
+Parent: 4
+
+mixamorig1:HeadTop_End
+6
+0 20.9998 6.16276
+Children Size: 0
+Parent: 5
+
+mixamorig1:LeftShoulder
+7
+6.14012 12.8779 -1.79955
+Children Size: 1
+Parent: 3
+
+mixamorig1:LeftArm
+8
+12.545 -3.43143 -0.05801
+Children Size: 1
+Parent: 7
+
+mixamorig1:LeftForeArm
+9
+25.4473 -1.87637 -1.50563
+Children Size: 1
+Parent: 8
+
+mixamorig1:LeftHand
+10
+23.3675 0.87764 0.971305
+Children Size: 5
+Parent: 9
+
+mixamorig1:LeftHandThumb1
+11
+3.57548 -1.76189 3.03943
+Children Size: 1
+Parent: 10
+
+mixamorig1:LeftHandThumb2
+12
+2.8604 -1.40945 2.43155
+Children Size: 1
+Parent: 11
+
+mixamorig1:LeftHandThumb3
+13
+2.57894 -1.80151 1.75071
+Children Size: 1
+Parent: 12
+
+mixamorig1:LeftHandThumb4
+14
+2.40899 -1.46115 1.06422
+Children Size: 0
+Parent: 13
+
+mixamorig1:LeftHandIndex1
+15
+11.357 -1.30647 4.43968
+Children Size: 1
+Parent: 10
+
+mixamorig1:LeftHandIndex2
+16
+3.21524 -0.39093 0.624045
+Children Size: 1
+Parent: 15
+
+mixamorig1:LeftHandIndex3
+17
+2.93898 -0.735489 0.560646
+Children Size: 1
+Parent: 16
+
+mixamorig1:LeftHandIndex4
+18
+2.55244 -0.779205 0.483288
+Children Size: 0
+Parent: 17
+
+mixamorig1:LeftHandMiddle1
+19
+12.1956 -0.657242 2.10876
+Children Size: 1
+Parent: 10
+
+mixamorig1:LeftHandMiddle2
+20
+3.37994 -0.547394 0.236206
+Children Size: 1
+Parent: 19
+
+mixamorig1:LeftHandMiddle3
+21
+3.0439 -0.829651 0.195068
+Children Size: 1
+Parent: 20
+
+mixamorig1:LeftHandMiddle4
+22
+2.80662 -0.600723 0.188473
+Children Size: 0
+Parent: 21
+
+mixamorig1:LeftHandRing1
+23
+12.5636 -0.458878 -0.154891
+Children Size: 1
+Parent: 10
+
+mixamorig1:LeftHandRing2
+24
+2.59657 -0.829819 0.032336
+Children Size: 1
+Parent: 23
+
+mixamorig1:LeftHandRing3
+25
+2.54829 -0.608398 0.044838
+Children Size: 1
+Parent: 24
+
+mixamorig1:LeftHandRing4
+26
+2.16787 -0.507812 0.038965
+Children Size: 0
+Parent: 25
+
+mixamorig1:LeftHandPinky1
+27
+11.3417 -0.310532 -2.25332
+Children Size: 1
+Parent: 10
+
+mixamorig1:LeftHandPinky2
+28
+2.64883 -0.669128 -0.120024
+Children Size: 1
+Parent: 27
+
+mixamorig1:LeftHandPinky3
+29
+2.07525 -0.703857 -0.105192
+Children Size: 1
+Parent: 28
+
+mixamorig1:LeftHandPinky4
+30
+1.85078 -0.684036 -0.097376
+Children Size: 0
+Parent: 29
+
+mixamorig1:RightShoulder
+31
+-6.14013 12.8778 -1.74139
+Children Size: 1
+Parent: 3
+
+mixamorig1:RightArm
+32
+-12.545 -3.43137 0.058123
+Children Size: 1
+Parent: 31
+
+mixamorig1:RightForeArm
+33
+-25.4473 -1.87646 -1.67104
+Children Size: 1
+Parent: 32
+
+mixamorig1:RightHand
+34
+-23.3674 0.87764 0.912149
+Children Size: 5
+Parent: 33
+
+mixamorig1:RightHandThumb1
+35
+-3.65528 -1.78781 3.11002
+Children Size: 1
+Parent: 34
+
+mixamorig1:RightHandThumb2
+36
+-2.92431 -1.43025 2.48811
+Children Size: 1
+Parent: 35
+
+mixamorig1:RightHandThumb3
+37
+-2.52855 -1.77696 1.70692
+Children Size: 1
+Parent: 36
+
+mixamorig1:RightHandThumb4
+38
+-2.44338 -1.16232 1.07347
+Children Size: 0
+Parent: 37
+
+mixamorig1:RightHandIndex1
+39
+-11.8884 -1.24783 4.75519
+Children Size: 1
+Parent: 34
+
+mixamorig1:RightHandIndex2
+40
+-3.04224 -0.516434 0.442817
+Children Size: 1
+Parent: 39
+
+mixamorig1:RightHandIndex3
+41
+-2.73887 -0.708374 0.392164
+Children Size: 1
+Parent: 40
+
+mixamorig1:RightHandIndex4
+42
+-2.43257 -0.620773 0.348507
+Children Size: 0
+Parent: 41
+
+mixamorig1:RightHandMiddle1
+43
+-12.0083 -0.74855 2.0984
+Children Size: 1
+Parent: 34
+
+mixamorig1:RightHandMiddle2
+44
+-3.44229 -0.415817 0.287318
+Children Size: 1
+Parent: 43
+
+mixamorig1:RightHandMiddle3
+45
+-3.10618 -0.837677 0.240102
+Children Size: 1
+Parent: 44
+
+mixamorig1:RightHandMiddle4
+46
+-2.85573 -0.604996 0.227592
+Children Size: 0
+Parent: 45
+
+mixamorig1:RightHandRing1
+47
+-12.328 -0.608994 -0.015787
+Children Size: 1
+Parent: 34
+
+mixamorig1:RightHandRing2
+48
+-2.7635 -0.569153 -0.029507
+Children Size: 1
+Parent: 47
+
+mixamorig1:RightHandRing3
+49
+-2.57398 -0.772354 -0.042469
+Children Size: 1
+Parent: 48
+
+mixamorig1:RightHandRing4
+50
+-2.32386 -0.456833 -0.023427
+Children Size: 0
+Parent: 49
+
+mixamorig1:RightHandPinky1
+51
+-11.4631 -0.329407 -2.20262
+Children Size: 1
+Parent: 34
+
+mixamorig1:RightHandPinky2
+52
+-2.56902 -0.599854 -0.108848
+Children Size: 1
+Parent: 51
+
+mixamorig1:RightHandPinky3
+53
+-2.01619 -0.737 -0.102787
+Children Size: 1
+Parent: 52
+
+mixamorig1:RightHandPinky4
+54
+-1.79624 -0.576553 -0.085258
+Children Size: 0
+Parent: 53
+
+mixamorig1:LeftUpLeg
+55
+8.0782 -5.40237 -0.535866
+Children Size: 1
+Parent: 0
+
+mixamorig1:LeftLeg
+56
+3.74307 -42.5405 -2.69545
+Children Size: 1
+Parent: 55
+
+mixamorig1:LeftFoot
+57
+3.35901 -41.9408 -2.88224
+Children Size: 1
+Parent: 56
+
+mixamorig1:LeftToeBase
+58
+1.13337 -9.11644 13.3219
+Children Size: 1
+Parent: 57
+
+mixamorig1:LeftToe_End
+59
+0.591574 -0.054443 6.17738
+Children Size: 0
+Parent: 58
+
+mixamorig1:RightUpLeg
+60
+-8.0782 -5.4024 -0.751774
+Children Size: 1
+Parent: 0
+
+mixamorig1:RightLeg
+61
+-3.74307 -42.5405 -2.46451
+Children Size: 1
+Parent: 60
+
+mixamorig1:RightFoot
+62
+-3.359 -41.9408 -2.96897
+Children Size: 1
+Parent: 61
+
+mixamorig1:RightToeBase
+63
+-1.13341 -9.1168 13.4165
+Children Size: 1
+Parent: 62
+
+mixamorig1:RightToe_End
+64
+-0.591589 -0.054615 6.1514
+Children Size: 0
+Parent: 63

@@ -48,6 +48,9 @@ AnimationCycleWidget::AnimationCycleWidget(QWidget *parent, SceneModel *TheScene
 
 	// set the timer to fire 24 times a second
 	animationTimer->start((double)1000/24);
+
+	// debug time: fire 4 times a second
+	// animationTimer->start((double)1000/4);
     } // constructor
 
 // destructor

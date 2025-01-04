@@ -36,6 +36,7 @@ class Terrain : public IndexedFaceSurface
 	
 	// A function to find the height at a known (x,y) coordinate
 	float getHeight(float x, float y);
+	float getHeightBilinear(float x, float y);
 	
 	// A related function to find the normal vector at a given (x,y) coordinate
 	Cartesian3 getNormal(float x, float y); 

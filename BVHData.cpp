@@ -207,26 +207,10 @@ void BVHData::loadRotationData(std::vector<Cartesian3>& rotations, std::vector<f
 void BVHData::InterpolateToRun( BVHData stand, BVHData run, int interpolationFrames)
 {
 	float frames_interpolate = 5;
-	// interpolate between stand.boneTranslations and run.boneTranslations
-	// this->boneTranslations.clear();
-	std::vector<Cartesian3> translations;
-	for (size_t i = 0; i < stand.boneTranslations.size(); i++)
-	{
-		if (stand.boneTranslations[i] == run.boneTranslations[i])
-		{
-			translations.push_back(stand.boneTranslations[i]);
-			continue;
-		}
-		std::cout << "Different Translation" << std::endl;
-		float x = stand.boneTranslations[i].x + (run.boneTranslations[i].x - stand.boneTranslations[i].x) * interpolationFrames / frames_interpolate;
-		float y = stand.boneTranslations[i].y + (run.boneTranslations[i].y - stand.boneTranslations[i].y) * interpolationFrames / frames_interpolate;
-		float z = stand.boneTranslations[i].z + (run.boneTranslations[i].z - stand.boneTranslations[i].z) * interpolationFrames / frames_interpolate;
 
-		translations.push_back(Cartesian3(x, y, z));
-	}
+	// std::cout << interpolationFrames << std::endl;
 
 	// interpolate between stand.boneRotations and run.boneRotations
-
 	std::vector<Cartesian3> rotations;
 	for (size_t i = 0; i < stand.boneRotations[0].size(); i++)
 	{
@@ -243,15 +227,43 @@ void BVHData::InterpolateToRun( BVHData stand, BVHData run, int interpolationFra
 	glPushMatrix();
 
 	glRotatef(90, 1.0, 0.0, 0.0);
-	// glTranslatef(root.joint_offset[0], root.joint_offset[1], root.joint_offset[2]);
+	glTranslatef(root.joint_offset[0], root.joint_offset[1], root.joint_offset[2]);
 	// glTranslatef(boneTranslations[jointid].x, boneTranslations[jointid].y, boneTranslations[jointid].z);
-	glTranslatef(translations[jointid].x, translations[jointid].y, translations[jointid].z);
-	RenderJoints(root, rotations, translations);
+	// glTranslatef(translations[jointid].x, translations[jointid].y, translations[jointid].z);
+	RenderJoints(root, rotations);
 
 	glPopMatrix();
 
-
 }
+
+
+void BVHData::InterpolateToPose(BVHData run, BVHData stand, int interpolationFrames, int interpPoint)
+{
+	float frames_interpolate = 5;
+
+	std::vector<Cartesian3> rotations;
+	for (size_t i = 0; i < run.boneRotations[interpPoint].size(); i++)
+	{
+		float x = run.boneRotations[interpPoint][i].x + (stand.boneRotations[0][i].x - run.boneRotations[interpPoint][i].x) * interpolationFrames / frames_interpolate;
+		float y = run.boneRotations[interpPoint][i].y + (stand.boneRotations[0][i].y - run.boneRotations[interpPoint][i].y) * interpolationFrames / frames_interpolate;
+		float z = run.boneRotations[interpPoint][i].z + (stand.boneRotations[0][i].z - run.boneRotations[interpPoint][i].z) * interpolationFrames / frames_interpolate;
+		rotations.push_back(Cartesian3(x, y, z));
+	}
+
+	auto root = this->root;
+	auto jointid = root.id;
+
+	glPushMatrix();
+
+	glRotatef(90, 1.0, 0.0, 0.0);
+	glTranslatef(root.joint_offset[0], root.joint_offset[1], root.joint_offset[2]);
+	// glTranslatef(boneTranslations[jointid].x, boneTranslations[jointid].y, boneTranslations[jointid].z);
+	// glTranslatef(translations[jointid].x, translations[jointid].y, translations[jointid].z);
+	RenderJoints(root, rotations);
+
+	glPopMatrix();
+}
+
 
 
 
@@ -269,16 +281,16 @@ void BVHData::Render(int frame)
 	glPushMatrix();
 
 	glRotatef(90, 1.0, 0.0, 0.0);
-	// glTranslatef(root.joint_offset[0], root.joint_offset[1], root.joint_offset[2]);
-	glTranslatef(boneTranslations[jointid].x, boneTranslations[jointid].y, boneTranslations[jointid].z);
-	RenderJoints(root, rotation, boneTranslations);
+	glTranslatef(root.joint_offset[0], root.joint_offset[1], root.joint_offset[2]);
+	// glTranslatef(boneTranslations[jointid].x, boneTranslations[jointid].y, boneTranslations[jointid].z);
+	RenderJoints(root, rotation);
 
 	glPopMatrix();
 } // Render()
 
 
 
-void BVHData::RenderJoints(Joint joint, std::vector<Cartesian3> rotation, std::vector<Cartesian3> translations)
+void BVHData::RenderJoints(Joint joint, std::vector<Cartesian3> rotation)
 {
 	for (auto child : joint.Children)
 	{
@@ -296,9 +308,9 @@ void BVHData::RenderJoints(Joint joint, std::vector<Cartesian3> rotation, std::v
 		// drawLine(Cartesian3(0, 0, 0), child.joint_offset);
 		RenderBone(Cartesian3(0, 0, 0), Cartesian3(child.joint_offset));
 
-		// glTranslatef(child.joint_offset[0], child.joint_offset[1], child.joint_offset[2]);
-		glTranslatef(translations[id].x, translations[id].y, translations[id].z);
-		RenderJoints(child, rotation, translations);
+		glTranslatef(child.joint_offset[0], child.joint_offset[1], child.joint_offset[2]);
+		// glTranslatef(translations[id].x, translations[id].y, translations[id].z);
+		RenderJoints(child, rotation);
 
 		glPopMatrix();
 	}

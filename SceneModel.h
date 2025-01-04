@@ -57,6 +57,8 @@ class SceneModel
 
 	// interpolation between the two character models
 	int interpolationFrames;
+	int interpolationPoint;
+	bool interpolate;
 
 	// the view matrix - updated by the interface code
 	Matrix4 viewMatrix;

@@ -189,7 +189,50 @@ float Terrain::getHeight(float x, float y)
 	// return the height
 	return height;
 	} // getHeight()
-	
+
+
+float Terrain::getHeightBilinear(float x, float y)
+{
+	float height = 0.0;
+
+	// Get grid dimensions
+	long nRows = heightValues.size(), nColumns = heightValues[0].size();
+	long arrayOrigin_i = nRows / 2, arrayOrigin_j = nColumns / 2;
+	long totalHeight = (nRows - 1) * xyScale;
+
+	// Transform x and y
+	x = x + arrayOrigin_j * xyScale;
+	y = totalHeight - (y + arrayOrigin_i * xyScale);
+
+	// Get grid indices
+	long x_integer = x / xyScale;
+	long y_integer = y / xyScale;
+
+	// Get fractional parts
+	float x_remainder = (x - (x_integer * xyScale)) / xyScale;
+	float y_remainder = (y - (y_integer * xyScale)) / xyScale;
+
+	// Boundary checks
+	x_integer = std::max(0L, std::min(x_integer, nColumns - 2));
+	y_integer = std::max(0L, std::min(y_integer, nRows - 2));
+
+	// Fetch heights at four corners
+	float h_tl = heightValues[y_integer][x_integer];
+	float h_tr = heightValues[y_integer][x_integer + 1];
+	float h_bl = heightValues[y_integer + 1][x_integer];
+	float h_br = heightValues[y_integer + 1][x_integer + 1];
+
+	// Interpolate
+	float h_top = (1 - x_remainder) * h_tl + x_remainder * h_tr;
+	float h_bottom = (1 - x_remainder) * h_bl + x_remainder * h_br;
+	height = (1 - y_remainder) * h_top + y_remainder * h_bottom;
+
+	return height;
+}
+
+
+
+
 // A related function to find the normal vector at a given (x,y) coordinate
 Cartesian3 Terrain::getNormal(float x, float y)
 	{ // getNormal()

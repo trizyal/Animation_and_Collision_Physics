@@ -121,11 +121,13 @@ class BVHData
 		// render the bvh heirarchy
 		void Render(int);
 
-		void RenderJoints(Joint, std::vector<Cartesian3>, std::vector<Cartesian3>);
+		void RenderJoints(Joint, std::vector<Cartesian3> rotations);
 
 		void RenderBone(Cartesian3, Cartesian3);
 
-		void InterpolateToRun(BVHData, BVHData, int);
+		void InterpolateToRun(BVHData stand, BVHData run, int interpolationFrames);
+
+		void InterpolateToPose(BVHData run, BVHData stand, int interpolationFrames, int frameNumber);
 
 		void drawSphere(Cartesian3);
 

@@ -68,6 +68,8 @@ SceneModel::SceneModel()
 	speed = 0.0;
 
 	interpolationFrames = 0;
+	interpolationPoint = 0;
+	interpolate = false;
 	
 	// set the initial view matrix
 	viewMatrix = Matrix4::Translate(Cartesian3(0.0, 15.0, -10.0));
@@ -157,18 +159,6 @@ void SceneModel::Render()
 	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
 
-	// if (isRunning)
-	// {
-	// 	if (speed < 0.4)
-	// 	{
-	// 		speed += 0.005;
-	// 	}
-	// 	else
-	// 	{
-	// 		speed = 0.4;
-	// 	}
-	// }
-
 	if (characterAngle == 90.0 && isRunning)
 	{
 		xMove += speed;
@@ -178,14 +168,28 @@ void SceneModel::Render()
 		xMove -= speed;
 	}
 
-	glTranslatef(xMove, 0.0, activeLandModel->getHeight(xMove, 0.0));
+	auto simpleHeight = activeLandModel->getHeight(xMove, 0.0);
+	// std::cout << "Simple Height: " << simpleHeight << std::endl;
+	auto myHeight = activeLandModel->getHeightBilinear(xMove, 0.0);
+	// std::cout << "My Height: " << myHeight << std::endl;
+
+	// float height = simpleHeight;
+	float height = myHeight;
+
+	glTranslatef(xMove, 0.0, height);
 	glRotatef(characterAngle, 0.0, 0.0, 1.0);
 	glScalef(0.025f, 0.025f, 0.025f);
 
-	if (interpolationFrames < 5 && isRunning)
+	if (interpolationFrames <= 5 && isRunning)
 	{
 		// interpolate the character's pose
+		speed += 0.02;
 		activeSkeletonModel->InterpolateToRun(standSkeletonModel, runSkeletonModel, interpolationFrames);
+		frameNumber = 0;
+	}
+	else if (interpolationFrames <= 5 && interpolate )
+	{
+		activeSkeletonModel->InterpolateToPose(runSkeletonModel, standSkeletonModel, interpolationFrames, interpolationPoint);
 	}
 	else
 	{
@@ -193,23 +197,16 @@ void SceneModel::Render()
 		{
 			// speed slowly increases to 0.4
 			if (speed < 0.4)
-			{
-				speed += 0.005;
-			}
+				speed += 0.05;
 			else
-			{
 				speed = 0.4;
-			}
 		}
-
 
 		// render the character
 		activeSkeletonModel->Render(frameNumber);
 	}
 
 	// activeSkeletonModel->Render(frameNumber);
-
-
 
 	glPopMatrix();
 
@@ -236,6 +233,8 @@ void SceneModel::ResetGame()
 	{
 		interpolationFrames = 0;
 		isRunning = false;
+		interpolate = true;
+		interpolationPoint = frameNumber;
 		this->activeSkeletonModel = &standSkeletonModel;
 	}
 	else

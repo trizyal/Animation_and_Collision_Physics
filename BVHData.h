@@ -125,11 +125,9 @@ class BVHData
 
 		void RenderBone(Cartesian3, Cartesian3);
 
-		void TestRenderJoints();
+		void InterpolateToRun();
 
 		void drawSphere(Cartesian3);
-
-		void drawCylinder(Joint, Joint, int);
 
 		void drawLine(Cartesian3, Cartesian3);
 

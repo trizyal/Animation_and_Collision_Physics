@@ -101,11 +101,14 @@ void AnimationCycleWidget::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_X:
 			exit(0);
 			break;
+		case Qt::Key_Escape:
+			exit(0);
 	
 		// camera controls
 		case Qt::Key_W:
 			theScene->EventCharacterForward();
 			break;
+
 		case Qt::Key_S:
 			theScene->EventCharacterBackward();
 			break;

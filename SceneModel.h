@@ -50,6 +50,10 @@ class SceneModel
 	// and a pointer to keep track of the active one
 	BVHData *activeSkeletonModel;
 
+	GLfloat characterAngle;
+	bool isRunning;
+	GLfloat xMove;
+
 	// the view matrix - updated by the interface code
 	Matrix4 viewMatrix;
 
@@ -68,6 +72,9 @@ class SceneModel
 	// character control events: WASD
 	void EventCharacterForward();
 	void EventCharacterBackward();
+
+	// interpolation from standing pose to running pose frame 0
+	void InterpolateToRun();
 	
 	// reset game
 	void ResetGame();

@@ -61,6 +61,10 @@ SceneModel::SceneModel()
 
 	// set the reference for the terrain model to use
     this->activeLandModel = &flatLandModel;
+	this->activeSkeletonModel = &standSkeletonModel;
+	characterAngle = 90.0;
+	isRunning = false;
+	xMove = 0.0;
 	
 	// set the initial view matrix
 	viewMatrix = Matrix4::Translate(Cartesian3(0.0, 15.0, -10.0));
@@ -147,69 +151,65 @@ void SceneModel::Render()
 	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
 
-	// glTranslatef(0.0, -100.0, 0.0);
-	glRotatef(90.0, 1.0, 0.0, 0.0);
-	// glRotatef(90, 0.0, 1.0, 0.0);
-	glTranslatef(0.0, 10.0, 0.0);
-	glScalef(0.05f, 0.05f, 0.05f);
+	if (characterAngle == 90.0 && isRunning)
+    {
+        xMove += 0.4;
+	}
+	else if (characterAngle == -90.0 && isRunning)
+    {
+        xMove -= 0.4;
+    }
 
-	// standSkeletonModel.TestRenderJoints();
-	// standSkeletonModel.Render(0);
-	runSkeletonModel.Render(frameNumber);
+	glTranslatef(xMove, 0.0, activeLandModel->getHeight(xMove, 0.0));
+	glRotatef(characterAngle, 0.0, 0.0, 1.0);
+	glScalef(0.025f, 0.025f, 0.025f);
+
+	activeSkeletonModel->Render(frameNumber);
 
 	glPopMatrix();
-
-
-
-
-	// glRotatef(90, 1.0, 0.0, 0.0);
-	//
-	// glBegin(GL_LINES);
-	// // x-axis
-	// glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, redColor);
-	// glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
-	// glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
-	// glVertex3f(-100.0, 0.0, 1.0);
-	// glVertex3f(100.0, 0.0, 1.0);
-	// // y-axis
-	// glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, yellowColor);
-	// glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
-	// glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
-	// glVertex3f(0.0, -100.0, 1.0);
-	// glVertex3f(0.0, 100.0, 1.0);
-	// // z-axis
-	// glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blueColor);
-	// glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
-	// glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
-	// glVertex3f(0.0, 0.0, -100.0);
-	// glVertex3f(0.0, 0.0, 100.0);
-	//
-	// glEnd();
 
     } // Render()
 
 // character control events: W for forward
 void SceneModel::EventCharacterForward()
-    { // EventCharacterForward()
-
-    } // EventCharacterForward()
+{ // EventCharacterForward()
+	characterAngle = 90.0;
+	frameNumber = 0;
+} // EventCharacterForward()
 
 // character control events: S for backward
 void SceneModel::EventCharacterBackward()
-    { // EventCharacterBackward()
+{ // EventCharacterBackward()
+	characterAngle = -90.0;
+	frameNumber = 0;
+} // EventCharacterBackward()
 
-    } // EventCharacterBackward()
 
 void SceneModel::ResetGame()
-    { // ResetGame()
+{ // ResetGame()
+	if (isRunning)
+	{
+		isRunning = false;
+		this->activeSkeletonModel = &standSkeletonModel;
+	}
+	else
+	{
+		isRunning = true;
+		this->activeSkeletonModel = &runSkeletonModel;
+	}
+	// reset the frame number
+	frameNumber = 0;
     this->ResetPhysics();
-    } // ResetGame()
+} // ResetGame()
 
 // routine to reset the simulation
 void SceneModel::ResetPhysics()
-	{ // ResetPhysics()
+{ // ResetPhysics()
 	std::cout << "Resetting Physics." << std::endl;
-	} // ResetPhysics()
+
+
+
+} // ResetPhysics()
 	
 // routine to switch between flat land and rolling land
 void SceneModel::SwitchLand()

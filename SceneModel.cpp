@@ -65,6 +65,9 @@ SceneModel::SceneModel()
 	characterAngle = 90.0;
 	isRunning = false;
 	xMove = 0.0;
+	speed = 0.0;
+
+	interpolationFrames = 0;
 	
 	// set the initial view matrix
 	viewMatrix = Matrix4::Translate(Cartesian3(0.0, 15.0, -10.0));
@@ -81,6 +84,8 @@ void SceneModel::Update()
 	{ // Update()
 		// increment the frame number
 		frameNumber++;
+		// if we are interpolating
+		interpolationFrames++;
 
 		if (frameNumber > 15)
 		{
@@ -94,7 +99,8 @@ void SceneModel::Update()
 
 // routine to tell the scene to render itself
 void SceneModel::Render()
-	{ // Render()
+{
+	// Render()
 	// enable Z-buffering
 	glEnable(GL_DEPTH_TEST);
 	
@@ -151,20 +157,59 @@ void SceneModel::Render()
 	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
 
+	// if (isRunning)
+	// {
+	// 	if (speed < 0.4)
+	// 	{
+	// 		speed += 0.005;
+	// 	}
+	// 	else
+	// 	{
+	// 		speed = 0.4;
+	// 	}
+	// }
+
 	if (characterAngle == 90.0 && isRunning)
-    {
-        xMove += 0.4;
+	{
+		xMove += speed;
 	}
 	else if (characterAngle == -90.0 && isRunning)
-    {
-        xMove -= 0.4;
-    }
+	{
+		xMove -= speed;
+	}
 
 	glTranslatef(xMove, 0.0, activeLandModel->getHeight(xMove, 0.0));
 	glRotatef(characterAngle, 0.0, 0.0, 1.0);
 	glScalef(0.025f, 0.025f, 0.025f);
 
-	activeSkeletonModel->Render(frameNumber);
+	if (interpolationFrames < 5 && isRunning)
+	{
+		// interpolate the character's pose
+		activeSkeletonModel->InterpolateToRun(standSkeletonModel, runSkeletonModel, interpolationFrames);
+	}
+	else
+	{
+		if (isRunning)
+		{
+			// speed slowly increases to 0.4
+			if (speed < 0.4)
+			{
+				speed += 0.005;
+			}
+			else
+			{
+				speed = 0.4;
+			}
+		}
+
+
+		// render the character
+		activeSkeletonModel->Render(frameNumber);
+	}
+
+	// activeSkeletonModel->Render(frameNumber);
+
+
 
 	glPopMatrix();
 
@@ -189,11 +234,14 @@ void SceneModel::ResetGame()
 { // ResetGame()
 	if (isRunning)
 	{
+		interpolationFrames = 0;
 		isRunning = false;
 		this->activeSkeletonModel = &standSkeletonModel;
 	}
 	else
 	{
+		interpolationFrames = 0;
+		speed = 0.0;
 		isRunning = true;
 		this->activeSkeletonModel = &runSkeletonModel;
 	}

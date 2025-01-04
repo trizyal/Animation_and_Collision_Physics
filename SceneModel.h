@@ -53,6 +53,10 @@ class SceneModel
 	GLfloat characterAngle;
 	bool isRunning;
 	GLfloat xMove;
+	GLfloat speed;
+
+	// interpolation between the two character models
+	int interpolationFrames;
 
 	// the view matrix - updated by the interface code
 	Matrix4 viewMatrix;

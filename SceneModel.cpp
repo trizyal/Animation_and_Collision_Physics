@@ -48,9 +48,10 @@ const GLfloat redColor[4] = {1.0, 0.0, 0.0, 1.0};
 const GLfloat yellowColor[4] = {1.0, 1.0, 0.0, 1.0};
 const GLfloat blueColor[4] = {0.0, 0.0, 1.0, 1.0};
 
-const float elasticity = 0.6;
+const float elasticityCoeff = 0.6;
 int collisionCount = 0;
 float inverseInertia = 2.5;
+const float frictionCoeff = 0.5;
 
 
 // constructor
@@ -172,6 +173,7 @@ void SceneModel::Render()
 	// standSkeletonModel.Render(0);
 
 
+
 	glPushMatrix();
 
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, characterColour);
@@ -256,16 +258,16 @@ void SceneModel::Render()
 		auto v_normal = dot * normal;
 		auto v_tangent = modelVelocity - v_normal;
 
-		float impulse = -(1 + elasticity) * dot;
+		float impulse = -(1 + elasticityCoeff) * dot;
 		Cartesian3 j_normal = impulse * normal;
-		Cartesian3 j_tangent = v_tangent;
+		Cartesian3 j_tangent = v_tangent * (1 - frictionCoeff);
 		Cartesian3 j = j_normal + j_tangent;
 
 		// auto del_v = impulse * normal;
 		// modelVelocity = modelVelocity + del_v; // older version
 
 		// update linear velocity
-		modelVelocity = modelVelocity + j;
+		modelVelocity = modelVelocity + j_normal;
 
 		// angular impulse
 		auto r = collisionVertex - modelPosition;
@@ -417,6 +419,8 @@ void SceneModel::ResetPhysics()
 	// reset the ball velocity
 	modelVelocity = Cartesian3(0.0, 0.0, 0.0);
 
+	modelAngularVelocity = Cartesian3(0.0, 0.0, 0.0);
+
 
 
 } // ResetPhysics()
@@ -441,7 +445,7 @@ void SceneModel::SwitchModel()
 	if (activeModel == &sphereModel)
 		activeModel = &dodecahedronModel;
 	else if (activeModel == &dodecahedronModel)
-		activeModel = &sphereModel;
+        activeModel = &sphereModel;
 	// and reset the physics
 	ResetPhysics();
 } // SwitchModel()

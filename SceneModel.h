@@ -67,7 +67,7 @@ class SceneModel
 
 	IndexedFaceSurface *activeModel;
 
-	Cartesian3 const gravity = Cartesian3(0.0, 0.0, -0.05);
+	Cartesian3 const gravity = Cartesian3(0.0, 0.0, -0.08);
 	Cartesian3 modelPosition;
 	Cartesian3 modelVelocity;
 	Cartesian3 modelAngularVelocity;

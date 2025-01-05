@@ -50,15 +50,26 @@ class SceneModel
 	// and a pointer to keep track of the active one
 	BVHData *activeSkeletonModel;
 
+	// Movent of the character
 	GLfloat characterAngle;
 	bool isRunning;
-	GLfloat xMove;
-	GLfloat speed;
+	GLfloat characterXPosition;
+	GLfloat characterSpeed;
 
 	// interpolation between the two character models
 	int interpolationFrames;
 	int interpolationPoint;
 	bool interpolate;
+
+	// sphere models
+	IndexedFaceSurface sphereModel;
+	IndexedFaceSurface dodecahedronModel;
+
+	IndexedFaceSurface *activeModel;
+
+	Cartesian3 const gravity = Cartesian3(0.0, 0.0, -0.05);
+	Cartesian3 modelPosition;
+	Cartesian3 modelVelocity;
 
 	// the view matrix - updated by the interface code
 	Matrix4 viewMatrix;
@@ -99,6 +110,7 @@ class SceneModel
 	
 	// and to rotate to right
 	void RotateLaunchRight();
+
 	}; // class SceneModel
 
 #endif

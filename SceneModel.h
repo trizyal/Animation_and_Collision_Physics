@@ -70,6 +70,9 @@ class SceneModel
 	Cartesian3 const gravity = Cartesian3(0.0, 0.0, -0.05);
 	Cartesian3 modelPosition;
 	Cartesian3 modelVelocity;
+	Cartesian3 modelAngularVelocity;
+	Cartesian3 modelRotation;
+	Quaternion modelOrientation;
 
 	// the view matrix - updated by the interface code
 	Matrix4 viewMatrix;
@@ -110,6 +113,8 @@ class SceneModel
 	
 	// and to rotate to right
 	void RotateLaunchRight();
+
+	Cartesian3 findCollisionVertex();
 
 	}; // class SceneModel
 

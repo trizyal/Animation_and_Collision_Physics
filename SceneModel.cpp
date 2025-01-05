@@ -50,6 +50,7 @@ const GLfloat blueColor[4] = {0.0, 0.0, 1.0, 1.0};
 
 const float elasticity = 0.6;
 int collisionCount = 0;
+float inverseInertia = 2.5;
 
 
 // constructor
@@ -68,7 +69,8 @@ SceneModel::SceneModel()
 	dodecahedronModel.ReadFileIndexedFace(dodecahedronModelName);
 
 	// set the reference for the terrain model to use
-    this->activeLandModel = &flatLandModel;
+    // this->activeLandModel = &flatLandModel;
+    this->activeLandModel = &stripeLandModel;
 	this->activeSkeletonModel = &standSkeletonModel;
 	this->activeModel = &dodecahedronModel;
 
@@ -83,6 +85,9 @@ SceneModel::SceneModel()
 
 	modelPosition = Cartesian3(10.0, 0.0, 10.0);
 	modelVelocity = Cartesian3(0.0, 0.0, 0.0);
+	modelAngularVelocity = Cartesian3(0.0, 0.0, 0.0);
+	modelRotation = Cartesian3(0.0, 0.0, 0.0);
+	modelOrientation = Quaternion(0.0, 0.0, 0.0, 1.0);
 	
 	// set the initial view matrix
 	viewMatrix = Matrix4::Translate(Cartesian3(0.0, 15.0, -10.0));
@@ -233,46 +238,76 @@ void SceneModel::Render()
 
 	float radius = 1.0;
 
-	if (modelPosition.z < planeHeight + radius)
+	// collision detection with the terrain
+	if (modelPosition.z < planeHeight + radius && fabs(modelVelocity.z) > 0.01)
 	{
 		modelPosition.z = planeHeight + radius;
-		// collision detection
+		// collision detection with the terrain
+
+		// find the collision vertex of the docecahedron
+		auto collisionVertex = findCollisionVertex();
 
 		// calculate the normal of the terrain
 		Cartesian3 normal = activeLandModel->getNormal(modelPosition.x, modelPosition.y);
 		normal = normal.unit();
-		// reverse the velocity
-		// modelVelocity = modelVelocity * -1;
-		float dot = modelVelocity.dot(normal);
-		auto v_normal = dot * normal;
-		float impulse = -(1 + elasticity) * dot;
-		auto del_v = impulse * normal;
-		modelVelocity = modelVelocity + del_v;
 
-		auto torque = impulse;
+		float dot = modelVelocity.dot(normal);
+
+		auto v_normal = dot * normal;
 		auto v_tangent = modelVelocity - v_normal;
 
-		// modelVelocity = modelVelocity - dot * normal * (1 + elasticity);
-		// apply elasticity
-		// modelVelocity = modelVelocity * elasticity;
+		float impulse = -(1 + elasticity) * dot;
+		Cartesian3 j_normal = impulse * normal;
+		Cartesian3 j_tangent = v_tangent;
+		Cartesian3 j = j_normal + j_tangent;
+
+		// auto del_v = impulse * normal;
+		// modelVelocity = modelVelocity + del_v; // older version
+
+		// update linear velocity
+		modelVelocity = modelVelocity + j;
+
+		// angular impulse
+		auto r = collisionVertex - modelPosition;
+		auto torque = r.cross(j);
+
+		// update angular velocity
+		Cartesian3 angularVelocityChange = torque * inverseInertia;
+		modelAngularVelocity = modelAngularVelocity + angularVelocityChange;
+
+		modelRotation = modelRotation + modelAngularVelocity;
+
 	}
+	modelRotation = modelRotation + modelAngularVelocity;
+	float angle = modelRotation.length();
+	Cartesian3 axis = modelRotation.unit();
+
+	float angleX = modelRotation.x;
+	float angleY = modelRotation.y;
+	float angleZ = modelRotation.z;
+
 
 	glPushMatrix();
 
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, ballColour);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
-
 	glTranslatef(modelPosition.x, modelPosition.y, modelPosition.z);
-
+	glRotatef(angleZ, 0, 0, 1);
+	glRotatef(angleY, 0, 1, 0);
+	glRotatef(angleX, 1, 0, 0);
 	activeModel->Render();
 
 	glPopMatrix();
+
+
 
 	if (fabs(modelVelocity.z) < 0.01)
 	{
 		modelVelocity.z = 0.0;
 	}
+
+
 
 	// test collision between the ball and the character
 	// horizontal collision
@@ -299,12 +334,39 @@ void SceneModel::Render()
 		characterColour[1] = 1.0;
 	}
 
+} // Render()
+
+
+Cartesian3 SceneModel::findCollisionVertex()
+{
+	Cartesian3 collisionVertex = Cartesian3(0.0, 0.0, 0.0);
+	float smallestDistance = 1000000.0;
+
+	// std::cout << "Reached 1" << std::endl;
+
+	for ( const auto& vertex : activeModel->vertices)
+    {
+		float terrainZ = activeLandModel->getHeight(vertex.x, vertex.y);
+
+		float distance = vertex.z - terrainZ;
+
+		// std::cout << "Reached 2" << std::endl;
+
+		if (distance < smallestDistance)
+	    {
+	        smallestDistance = distance;
+	        collisionVertex = vertex;
+			// std::cout << "Collision Vertex: " << collisionVertex << std::endl;
+	    }
+
+    }
+	// std::cout << "Collision Vertex: " << collisionVertex << std::endl;
+	// exit(24);
+	return collisionVertex;
+}
 
 
 
-
-
-    } // Render()
 
 // character control events: W for forward
 void SceneModel::EventCharacterForward()

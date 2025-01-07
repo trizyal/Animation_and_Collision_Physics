@@ -70,10 +70,11 @@ SceneModel::SceneModel()
 	dodecahedronModel.ReadFileIndexedFace(dodecahedronModelName);
 
 	// set the reference for the terrain model to use
-    // this->activeLandModel = &flatLandModel;
-    this->activeLandModel = &stripeLandModel;
+    this->activeLandModel = &flatLandModel;
+    // this->activeLandModel = &stripeLandModel;
 	this->activeSkeletonModel = &standSkeletonModel;
-	this->activeModel = &dodecahedronModel;
+	// this->activeModel = &dodecahedronModel;
+	this->activeModel = &sphereModel;
 
 	characterAngle = 90.0;
 	isRunning = false;
@@ -231,17 +232,17 @@ void SceneModel::Render()
 
 	glPopMatrix();
 
-	// calculate velocity of the ball
-	modelVelocity = modelVelocity + gravity;
+		// calculate velocity of the ball
+		modelVelocity = modelVelocity + gravity;
 	// calculate position of the ball
 	modelPosition = modelPosition + modelVelocity;
 
-	float planeHeight = activeLandModel->getHeight(modelPosition.x, modelPosition.y);
+	float planeHeight = activeLandModel->getHeightBilinear(modelPosition.x, modelPosition.y);
 
 	float radius = 1.0;
 
 	// collision detection with the terrain
-	if (modelPosition.z < planeHeight + radius && fabs(modelVelocity.z) > 0.01)
+	if (modelPosition.z <= planeHeight + radius && fabs(modelVelocity.z) > 0.01)
 	{
 		modelPosition.z = planeHeight + radius;
 		// collision detection with the terrain
@@ -257,17 +258,20 @@ void SceneModel::Render()
 
 		auto v_normal = dot * normal;
 		auto v_tangent = modelVelocity - v_normal;
+		// modelVelocity = v_normal;
 
-		float impulse = -(1 + elasticityCoeff) * dot;
-		Cartesian3 j_normal = impulse * normal;
-		Cartesian3 j_tangent = v_tangent * (1 - frictionCoeff);
+		float impulse = (1 + elasticityCoeff) * dot;
+		Cartesian3 impulse2 = (1 + elasticityCoeff) * v_tangent * (1 - frictionCoeff);
+		Cartesian3 j_normal = impulse * normal * 1.2;
+		Cartesian3 j_tangent = impulse2 ;
 		Cartesian3 j = j_normal + j_tangent;
 
 		// auto del_v = impulse * normal;
 		// modelVelocity = modelVelocity + del_v; // older version
 
 		// update linear velocity
-		modelVelocity = modelVelocity + j_normal;
+		// modelVelocity = modelVelocity + j_normal;
+		modelVelocity = modelVelocity + gravity - impulse*normal*1.15 + v_tangent*frictionCoeff;
 
 		// angular impulse
 		auto r = collisionVertex - modelPosition;
@@ -295,9 +299,9 @@ void SceneModel::Render()
 	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
 	glTranslatef(modelPosition.x, modelPosition.y, modelPosition.z);
-	glRotatef(angleZ, 0, 0, 1);
-	glRotatef(angleY, 0, 1, 0);
-	glRotatef(angleX, 1, 0, 0);
+	// glRotatef(angleZ, 0, 0, 1);
+	// glRotatef(angleY, 0, 1, 0);
+	// glRotatef(angleX, 1, 0, 0);
 	activeModel->Render();
 
 	glPopMatrix();

@@ -72,7 +72,7 @@ class SceneModel
 	Cartesian3 modelVelocity;
 	Cartesian3 modelAngularVelocity;
 	Cartesian3 modelRotation;
-	Quaternion modelOrientation;
+	Matrix4 modelOrientationR;
 
 	// the view matrix - updated by the interface code
 	Matrix4 viewMatrix;
@@ -92,9 +92,6 @@ class SceneModel
 	// character control events: WASD
 	void EventCharacterForward();
 	void EventCharacterBackward();
-
-	// interpolation from standing pose to running pose frame 0
-	void InterpolateToRun();
 	
 	// reset game
 	void ResetGame();

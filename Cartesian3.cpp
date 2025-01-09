@@ -65,6 +65,12 @@ Cartesian3 Cartesian3::operator *(float factor) const
     return returnVal;
     } // Cartesian3::operator *()
 
+Cartesian3 Cartesian3::operator *(const Cartesian3 &other) const
+    { // Cartesian3::operator *()
+    Cartesian3 returnVal(x * other.x, y * other.y, z * other.z);
+    return returnVal;
+    } // Cartesian3::operator *()
+
 // division operator
 Cartesian3 Cartesian3::operator /(float factor) const
     { // Cartesian3::operator /()

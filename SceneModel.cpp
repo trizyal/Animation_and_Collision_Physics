@@ -88,8 +88,7 @@ SceneModel::SceneModel()
 	modelPosition = Cartesian3(10.0, 0.0, 10.0);
 	modelVelocity = Cartesian3(0.0, 0.0, 0.0);
 	modelAngularVelocity = Cartesian3(0.0, 0.0, 0.0);
-	modelRotation = Cartesian3(0.0, 0.0, 0.0);
-	modelOrientation = Quaternion(0.0, 0.0, 0.0, 1.0);
+	modelOrientationR = Matrix4::Identity();
 	
 	// set the initial view matrix
 	viewMatrix = Matrix4::Translate(Cartesian3(0.0, 15.0, -10.0));
@@ -112,11 +111,7 @@ void SceneModel::Update()
 		if (frameNumber > 15)
 		{
 			frameNumber = 0;
-			// auto time = std::chrono::system_clock::now();
-			// print time in milliseconds
-			// std::cout << "Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()).count() << std::endl;
 		}
-		// std::cout << "Frame: " << frameNumber << std::endl;
 	} // Update()`
 
 // routine to tell the scene to render itself
@@ -232,65 +227,47 @@ void SceneModel::Render()
 
 	glPopMatrix();
 
-		// calculate velocity of the ball
-		modelVelocity = modelVelocity + gravity;
+
+
+	// calculate velocity of the ball
+	modelVelocity = modelVelocity + gravity;
 	// calculate position of the ball
 	modelPosition = modelPosition + modelVelocity;
 
 	float planeHeight = activeLandModel->getHeightBilinear(modelPosition.x, modelPosition.y);
-
 	float radius = 1.0;
 
 	// collision detection with the terrain
 	if (modelPosition.z <= planeHeight + radius && fabs(modelVelocity.z) > 0.01)
 	{
 		modelPosition.z = planeHeight + radius;
-		// collision detection with the terrain
-
-		// find the collision vertex of the docecahedron
-		auto collisionVertex = findCollisionVertex();
 
 		// calculate the normal of the terrain
 		Cartesian3 normal = activeLandModel->getNormal(modelPosition.x, modelPosition.y);
-		normal = normal.unit();
+		// normal = normal.unit();
 
-		float dot = modelVelocity.dot(normal);
+		float velocity_normal = modelVelocity.dot(normal);
 
-		auto v_normal = dot * normal;
-		auto v_tangent = modelVelocity - v_normal;
-		// modelVelocity = v_normal;
+		auto impulse = -(1 + elasticityCoeff) * velocity_normal;
+		auto J = impulse * normal * 1.15;
 
-		float impulse = (1 + elasticityCoeff) * dot;
-		Cartesian3 impulse2 = (1 + elasticityCoeff) * v_tangent * (1 - frictionCoeff);
-		Cartesian3 j_normal = impulse * normal * 1.2;
-		Cartesian3 j_tangent = impulse2 ;
-		Cartesian3 j = j_normal + j_tangent;
+		modelVelocity = modelVelocity + J;
 
-		// auto del_v = impulse * normal;
-		// modelVelocity = modelVelocity + del_v; // older version
-
-		// update linear velocity
-		// modelVelocity = modelVelocity + j_normal;
-		modelVelocity = modelVelocity + gravity - impulse*normal*1.15 + v_tangent*frictionCoeff;
-
-		// angular impulse
+		auto collisionVertex = findCollisionVertex();
 		auto r = collisionVertex - modelPosition;
-		auto torque = r.cross(j);
-
-		// update angular velocity
-		Cartesian3 angularVelocityChange = torque * inverseInertia;
-		modelAngularVelocity = modelAngularVelocity + angularVelocityChange;
-
-		modelRotation = modelRotation + modelAngularVelocity;
-
+		auto torque = r.cross(J);
+		modelAngularVelocity = torque;
 	}
-	modelRotation = modelRotation + modelAngularVelocity;
-	float angle = modelRotation.length();
-	Cartesian3 axis = modelRotation.unit();
 
-	float angleX = modelRotation.x;
-	float angleY = modelRotation.y;
-	float angleZ = modelRotation.z;
+	auto halfTheta = modelAngularVelocity.length() / 2;
+	auto w = cos(halfTheta);
+	auto x = modelAngularVelocity.x * sin(halfTheta);
+	auto y = modelAngularVelocity.y * sin(halfTheta);
+	auto z = modelAngularVelocity.z * sin(halfTheta);
+
+	Quaternion rotationQuaternion = Quaternion(x, y, z, w);
+	auto rotationMatrix = rotationQuaternion.GetMatrix();
+	modelOrientationR = rotationMatrix * modelOrientationR;
 
 
 	glPushMatrix();
@@ -298,20 +275,19 @@ void SceneModel::Render()
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, ballColour);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, blackColour);
 	glMaterialfv(GL_FRONT, GL_EMISSION, blackColour);
+
 	glTranslatef(modelPosition.x, modelPosition.y, modelPosition.z);
-	// glRotatef(angleZ, 0, 0, 1);
-	// glRotatef(angleY, 0, 1, 0);
-	// glRotatef(angleX, 1, 0, 0);
+	glMultMatrixf(modelOrientationR.columnMajor().coordinates);
+
+
+
 	activeModel->Render();
 
 	glPopMatrix();
 
 
 
-	if (fabs(modelVelocity.z) < 0.01)
-	{
-		modelVelocity.z = 0.0;
-	}
+
 
 
 
@@ -350,24 +326,20 @@ Cartesian3 SceneModel::findCollisionVertex()
 
 	// std::cout << "Reached 1" << std::endl;
 
-	for ( const auto& vertex : activeModel->vertices)
+	for ( const auto& v : activeModel->vertices)
     {
+		auto vertex = modelOrientationR * v + modelPosition;
 		float terrainZ = activeLandModel->getHeight(vertex.x, vertex.y);
 
 		float distance = vertex.z - terrainZ;
-
-		// std::cout << "Reached 2" << std::endl;
 
 		if (distance < smallestDistance)
 	    {
 	        smallestDistance = distance;
 	        collisionVertex = vertex;
-			// std::cout << "Collision Vertex: " << collisionVertex << std::endl;
 	    }
 
     }
-	// std::cout << "Collision Vertex: " << collisionVertex << std::endl;
-	// exit(24);
 	return collisionVertex;
 }
 
@@ -424,6 +396,7 @@ void SceneModel::ResetPhysics()
 	modelVelocity = Cartesian3(0.0, 0.0, 0.0);
 
 	modelAngularVelocity = Cartesian3(0.0, 0.0, 0.0);
+	modelOrientationR = Matrix4::Identity();
 
 
 

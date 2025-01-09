@@ -46,6 +46,8 @@ class Cartesian3
     // multiplication operator
     Cartesian3 operator *(float factor) const;
 
+	Cartesian3 operator *(const Cartesian3 &other) const;
+
     // division operator
     Cartesian3 operator /(float factor) const;
 

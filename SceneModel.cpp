@@ -50,8 +50,8 @@ const GLfloat blueColor[4] = {0.0, 0.0, 1.0, 1.0};
 
 const float elasticityCoeff = 0.6;
 int collisionCount = 0;
-float inverseInertia = 2.5;
-const float frictionCoeff = 0.5;
+float momentofInertia = (39.0 * ((1.0 + sqrt(5.0)) / 2) + 28) / 150;
+const float frictionCoeff = 0.1;
 
 
 // constructor
@@ -244,19 +244,24 @@ void SceneModel::Render()
 
 		// calculate the normal of the terrain
 		Cartesian3 normal = activeLandModel->getNormal(modelPosition.x, modelPosition.y);
-		// normal = normal.unit();
+		normal = normal.unit();
 
-		float velocity_normal = modelVelocity.dot(normal);
-
-		auto impulse = -(1 + elasticityCoeff) * velocity_normal;
+		float VdotN = modelVelocity.dot(normal);
+		auto velocity_normal = normal * VdotN;
+		auto velocity_tangent = modelVelocity - velocity_normal;
+		auto impulse = -(1 + elasticityCoeff) * VdotN;
 		auto J = impulse * normal * 1.15;
-
-		modelVelocity = modelVelocity + J;
 
 		auto collisionVertex = findCollisionVertex();
 		auto r = collisionVertex - modelPosition;
 		auto torque = r.cross(J);
-		modelAngularVelocity = torque;
+
+		// apply friction
+		auto friction = -frictionCoeff * velocity_tangent;
+		J = J + friction;
+
+		modelVelocity = modelVelocity + J;
+		modelAngularVelocity = torque; // basically is the angular velocity
 	}
 
 	auto halfTheta = modelAngularVelocity.length() / 2;

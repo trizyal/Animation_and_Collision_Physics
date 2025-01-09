@@ -32,6 +32,17 @@
 #include "Quaternion.h"
 #include "BVHData.h"
 
+// struct to hold one model
+struct Models
+{
+	// IndexedFaceSurface *model;
+	int creationFrame;
+	Cartesian3 position;
+	Cartesian3 linearVelocity;
+	Cartesian3 angularVelocity;
+	Matrix4 orientationR;
+};
+
 class SceneModel										
 	{ // class SceneModel
 	public:	
@@ -68,11 +79,12 @@ class SceneModel
 	IndexedFaceSurface *activeModel;
 
 	Cartesian3 const gravity = Cartesian3(0.0, 0.0, -0.07);
-	Cartesian3 modelPosition;
-	Cartesian3 modelVelocity;
-	Cartesian3 modelAngularVelocity;
-	Cartesian3 modelRotation;
-	Matrix4 modelOrientationR;
+	// Cartesian3 modelPosition;
+	// Cartesian3 modelVelocity;
+	// Cartesian3 modelAngularVelocity;
+	// Matrix4 modelOrientationR;
+
+	std::vector<Models> models;
 
 	// the view matrix - updated by the interface code
 	Matrix4 viewMatrix;
@@ -111,7 +123,7 @@ class SceneModel
 	// and to rotate to right
 	void RotateLaunchRight();
 
-	Cartesian3 findCollisionVertex();
+	Cartesian3 findCollisionVertex(Models model);
 
 	}; // class SceneModel
 

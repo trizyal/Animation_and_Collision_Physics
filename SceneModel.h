@@ -35,7 +35,6 @@
 // struct to hold one model
 struct Models
 {
-	// IndexedFaceSurface *model;
 	int creationFrame;
 	Cartesian3 position;
 	Cartesian3 linearVelocity;
@@ -62,15 +61,19 @@ class SceneModel
 	BVHData *activeSkeletonModel;
 
 	// Movent of the character
-	GLfloat characterAngle;
+	GLfloat characterOrientation;
 	bool isRunning;
 	GLfloat characterXPosition;
 	GLfloat characterSpeed;
+	const float characterHeight = 1.8;
+	const float characterWidth = 0.3;
+	const float lookingAhead = 90;
+	const float lookingBehind = -90;
 
 	// interpolation between the two character models
-	int interpolationFrames;
-	int interpolationPoint;
-	bool interpolate;
+	int interpFrameNumber;
+	int interpFramePoint;
+	bool isStopping;
 
 	// sphere models
 	IndexedFaceSurface sphereModel;
@@ -78,11 +81,8 @@ class SceneModel
 
 	IndexedFaceSurface *activeModel;
 
-	Cartesian3 const gravity = Cartesian3(0.0, 0.0, -0.07);
-	// Cartesian3 modelPosition;
-	// Cartesian3 modelVelocity;
-	// Cartesian3 modelAngularVelocity;
-	// Matrix4 modelOrientationR;
+	Cartesian3 const gravity = Cartesian3(0.0, 0.0, -9.8);
+	const float ballRadius = 1.0;
 
 	std::vector<Models> models;
 

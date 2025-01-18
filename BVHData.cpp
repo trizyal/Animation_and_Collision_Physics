@@ -226,6 +226,7 @@ void BVHData::InterpolateToRun( BVHData stand, BVHData run, int interpolationFra
 
 	glPushMatrix();
 
+	// get the y-axis to point upwards
 	glRotatef(90, 1.0, 0.0, 0.0);
 	glTranslatef(root.joint_offset[0], root.joint_offset[1], root.joint_offset[2]);
 	// glTranslatef(boneTranslations[jointid].x, boneTranslations[jointid].y, boneTranslations[jointid].z);
@@ -239,7 +240,7 @@ void BVHData::InterpolateToRun( BVHData stand, BVHData run, int interpolationFra
 
 void BVHData::InterpolateToPose(BVHData run, BVHData stand, int interpolationFrames, int interpPoint)
 {
-	float frames_interpolate = 5;
+	float frames_interpolate = 10;
 
 	std::vector<Cartesian3> rotations;
 	for (size_t i = 0; i < run.boneRotations[interpPoint].size(); i++)
@@ -250,15 +251,15 @@ void BVHData::InterpolateToPose(BVHData run, BVHData stand, int interpolationFra
 		rotations.push_back(Cartesian3(x, y, z));
 	}
 
-	auto root = this->root;
-	auto jointid = root.id;
+
 
 	glPushMatrix();
 
+	// get the y-axis to point upwards
 	glRotatef(90, 1.0, 0.0, 0.0);
+	auto root = this->root;
 	glTranslatef(root.joint_offset[0], root.joint_offset[1], root.joint_offset[2]);
-	// glTranslatef(boneTranslations[jointid].x, boneTranslations[jointid].y, boneTranslations[jointid].z);
-	// glTranslatef(translations[jointid].x, translations[jointid].y, translations[jointid].z);
+
 	RenderJoints(root, rotations);
 
 	glPopMatrix();
@@ -272,7 +273,8 @@ void BVHData::InterpolateToPose(BVHData run, BVHData stand, int interpolationFra
 void BVHData::Render(int frame)
 { // Render()
 	if (frame >= this->frame_count)
-        frame = 0;
+        frame = 0; // handles when the character is standing still
+
 	auto rotation = this->boneRotations[frame];
 
 	auto root = this->root;
@@ -280,9 +282,9 @@ void BVHData::Render(int frame)
 
 	glPushMatrix();
 
+	// get the y-axis pointing upwards
 	glRotatef(90, 1.0, 0.0, 0.0);
 	glTranslatef(root.joint_offset[0], root.joint_offset[1], root.joint_offset[2]);
-	// glTranslatef(boneTranslations[jointid].x, boneTranslations[jointid].y, boneTranslations[jointid].z);
 	RenderJoints(root, rotation);
 
 	glPopMatrix();

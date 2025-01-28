@@ -6,6 +6,8 @@ UNIVERSITY LINUX:
 
 To compile on the University Linux machines, you will need to do the following:
 qmake -project "QT += core gui widgets opengl openglwidgets" "LIBS += -lGL -lGLU"
+qmake
+make
 
 You may see a compiler warning about a macro collision between Qt and OpenGL, which can be ignored.
 
